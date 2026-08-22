@@ -1,0 +1,246 @@
+:root {
+  --navy: #152238;
+  --navy-soft: #22345a;
+  --bg: #eef1f6;
+  --card: #ffffff;
+  --border: #dadfe8;
+  --text: #152238;
+  --text-muted: #5b6472;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  text-align: center;
+}
+
+.app {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 12px 16px 24px;
+  text-align: center;
+}
+
+/* ---------- Top bar ---------- */
+.top-bar {
+  background: var(--navy);
+  color: #fff;
+  border-radius: 6px;
+  padding: 10px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+.top-bar h1 {
+  font-size: 19px;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.top-bar-sub {
+  font-size: 12.5px;
+  color: #c7cfdd;
+}
+
+/* ---------- Filter bar (Power BI slicer strip) ---------- */
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+.slicer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 150px;
+}
+.slicer label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+  text-align: center;
+}
+.slicer select,
+.slicer input {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--text);
+  font-size: 12.5px;
+  text-align: center;
+  text-align-last: center;
+}
+.search-slicer {
+  min-width: 170px;
+}
+.clear-btn {
+  border: 1px solid var(--navy-soft);
+  background: var(--navy-soft);
+  color: #fff;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: center;
+  height: 30px;
+}
+.clear-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---------- KPI row ---------- */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.kpi-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--navy);
+  border-radius: 6px;
+  padding: 12px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 92px;
+}
+.kpi-value {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.kpi-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 4px;
+  text-align: center;
+}
+.kpi-sub {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+  text-align: center;
+}
+
+/* ---------- Charts ---------- */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.chart-card,
+.table-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px 4px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.chart-card.wide {
+  grid-column: 1 / -1;
+}
+.chart-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--navy);
+  text-align: center;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.row-count {
+  font-weight: 400;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ---------- Table ---------- */
+.table-scroll {
+  max-height: 480px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-top: 6px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+thead th {
+  position: sticky;
+  top: 0;
+  background: var(--navy);
+  color: #fff;
+  padding: 7px 8px;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: 600;
+  z-index: 1;
+}
+tbody td {
+  padding: 5px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+tbody tr:nth-child(even) {
+  background: #f5f7fa;
+}
+tbody tr:hover {
+  background: #e7ecf5;
+}
+.outcome-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
