@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { useFilterStore } from '../../state/filterStore';
-import { ACCOUNTS } from '../../data/loadAccounts';
+import { useDataStore } from '../../state/dataStore';
 
 export default function FilterBar() {
+  const accounts = useDataStore((s) => s.accounts);
   const vertical = useFilterStore((s) => s.vertical);
   const businessStatus = useFilterStore((s) => s.businessStatus);
   const businessOutcome = useFilterStore((s) => s.businessOutcome);
@@ -13,9 +14,9 @@ export default function FilterBar() {
   const setSearch = useFilterStore((s) => s.setSearch);
   const clearAll = useFilterStore((s) => s.clearAll);
 
-  const verticals = useMemo(() => [...new Set(ACCOUNTS.map((a) => a.vertical))].sort(), []);
-  const statuses = useMemo(() => [...new Set(ACCOUNTS.map((a) => a.businessStatus))].sort(), []);
-  const outcomes = useMemo(() => [...new Set(ACCOUNTS.map((a) => a.businessOutcome))].sort(), []);
+  const verticals = useMemo(() => [...new Set(accounts.map((a) => a.vertical))].sort(), [accounts]);
+  const statuses = useMemo(() => [...new Set(accounts.map((a) => a.businessStatus))].sort(), [accounts]);
+  const outcomes = useMemo(() => [...new Set(accounts.map((a) => a.businessOutcome))].sort(), [accounts]);
 
   const dirty =
     vertical !== 'All' || businessStatus !== 'All' || businessOutcome !== 'All' || search.trim() !== '';

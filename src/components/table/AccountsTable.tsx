@@ -3,7 +3,7 @@ import type { Account } from '../../types';
 import { OUTCOME_COLORS } from '../../lib/theme';
 import { useFilterStore } from '../../state/filterStore';
 import { useUiStore } from '../../state/uiStore';
-import { ACCOUNTS } from '../../data/loadAccounts';
+import { useDataStore } from '../../state/dataStore';
 
 type SortKey = 'name' | 'vertical' | 'businessStatus' | 'businessOutcome' | 'totalExpense' | 'totalBusiness';
 
@@ -23,6 +23,7 @@ export default function AccountsTable({ accounts }: { accounts: Account[] }) {
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [asc, setAsc] = useState(true);
   const selectAccount = useUiStore((s) => s.selectAccount);
+  const allAccounts = useDataStore((s) => s.accounts);
 
   const vertical = useFilterStore((s) => s.vertical);
   const businessStatus = useFilterStore((s) => s.businessStatus);
@@ -31,9 +32,9 @@ export default function AccountsTable({ accounts }: { accounts: Account[] }) {
   const setBusinessStatus = useFilterStore((s) => s.setBusinessStatus);
   const setBusinessOutcome = useFilterStore((s) => s.setBusinessOutcome);
 
-  const verticals = useMemo(() => [...new Set(ACCOUNTS.map((a) => a.vertical))].sort(), []);
-  const statuses = useMemo(() => [...new Set(ACCOUNTS.map((a) => a.businessStatus))].sort(), []);
-  const outcomes = useMemo(() => [...new Set(ACCOUNTS.map((a) => a.businessOutcome))].sort(), []);
+  const verticals = useMemo(() => [...new Set(allAccounts.map((a) => a.vertical))].sort(), [allAccounts]);
+  const statuses = useMemo(() => [...new Set(allAccounts.map((a) => a.businessStatus))].sort(), [allAccounts]);
+  const outcomes = useMemo(() => [...new Set(allAccounts.map((a) => a.businessOutcome))].sort(), [allAccounts]);
 
   const sorted = useMemo(() => {
     const copy = [...accounts];

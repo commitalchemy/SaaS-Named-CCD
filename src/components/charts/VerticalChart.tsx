@@ -6,7 +6,9 @@ import { VERTICAL_PALETTE } from '../../lib/theme';
 export default function VerticalChart({ accounts }: { accounts: Account[] }) {
   const { labels, values, colors } = useMemo(() => {
     const counts = new Map<string, number>();
-    accounts.forEach((a) => counts.set(a.vertical, (counts.get(a.vertical) ?? 0) + 1));
+    accounts
+      .filter((a) => a.vertical !== 'Unspecified')
+      .forEach((a) => counts.set(a.vertical, (counts.get(a.vertical) ?? 0) + 1));
     const entries = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
     return {
       labels: entries.map((e) => e[0]),

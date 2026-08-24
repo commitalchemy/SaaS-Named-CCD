@@ -4,40 +4,52 @@ import type { Account } from '../../types';
 import { OUTCOME_COLORS, NAVY_SOFT } from '../../lib/theme';
 import { useUiStore } from '../../state/uiStore';
 
+const TOP_N = 100;
+
 /**
- * Account-level Total Expense vs Total Business, both raw sheet columns.
- * Log-log axes so the many low-value accounts aren't crushed into one
- * corner by the handful of very large ones. Bubble size = Total Business.
+ * Top 100 accounts by Total Expense: Total Expense vs Total Business, both
+ * raw sheet columns. Log-log axes so the spread of values across two
+ * orders of magnitude stays readable. Bubble size = Total Business.
  * The dashed diagonal marks Total Business = Total Expense (break-even):
  * accounts above it earn more than they cost, accounts below it don't.
+ * Limiting to the top 100 (rather than plotting all ~2000 accounts) is
+ * what keeps the bubbles from piling into an unreadable blob.
  */
 export default function CostRevenueScatter({ accounts }: { accounts: Account[] }) {
   const selectAccount = useUiStore((s) => s.selectAccount);
 
-  const { traces, lineRange } = useMemo(() => {
+  const { traces, lineRange, shown } = useMemo(() => {
+    const valid = accounts.filter(
+      (a) => a.totalExpense != null && a.totalExpense > 0 && a.totalBusiness != null && a.totalBusiness > 0
+    );
+    const top = [...valid].sort((a, b) => (b.totalExpense ?? 0) - (a.totalExpense ?? 0)).slice(0, TOP_N);
+
     const byOutcome = new Map<
       string,
       { x: number[]; y: number[]; text: string[]; size: number[]; accounts: Account[] }
     >();
     let minV = Infinity;
     let maxV = -Infinity;
+    let maxSize = 0;
 
-    accounts.forEach((a) => {
-      if (!a.totalExpense || a.totalExpense <= 0 || !a.totalBusiness || a.totalBusiness <= 0) return;
+    top.forEach((a) => {
       const key = a.businessOutcome;
       if (!byOutcome.has(key)) byOutcome.set(key, { x: [], y: [], text: [], size: [], accounts: [] });
       const t = byOutcome.get(key)!;
-      t.x.push(a.totalExpense);
-      t.y.push(a.totalBusiness);
+      const expense = a.totalExpense as number;
+      const business = a.totalBusiness as number;
+      t.x.push(expense);
+      t.y.push(business);
       t.text.push(a.name);
-      t.size.push(a.totalBusiness);
+      t.size.push(business);
       t.accounts.push(a);
-      minV = Math.min(minV, a.totalExpense, a.totalBusiness);
-      maxV = Math.max(maxV, a.totalExpense, a.totalBusiness);
+      minV = Math.min(minV, expense, business);
+      maxV = Math.max(maxV, expense, business);
+      maxSize = Math.max(maxSize, business);
     });
 
     const traces = [...byOutcome.entries()].map(([outcome, t]) => ({
-      type: 'scattergl' as const,
+      type: 'scatter' as const,
       mode: 'markers' as const,
       name: outcome,
       x: t.x,
@@ -45,18 +57,18 @@ export default function CostRevenueScatter({ accounts }: { accounts: Account[] }
       text: t.text,
       marker: {
         color: OUTCOME_COLORS[outcome] ?? NAVY_SOFT,
-        opacity: 0.7,
+        opacity: 0.78,
         size: t.size,
         sizemode: 'area' as const,
-        sizeref: (2 * Math.max(...t.size, 1)) / 40 ** 2,
-        sizemin: 4,
-        line: { width: 0.5, color: '#ffffff' },
+        sizeref: (2 * Math.max(maxSize, 1)) / 46 ** 2,
+        sizemin: 7,
+        line: { width: 1, color: '#ffffff' },
       },
       hovertemplate: '%{text}<br>Total Expense: ₹%{x:,.0f}<br>Total Business: ₹%{y:,.0f}<extra></extra>',
       customdata: t.accounts,
     }));
 
-    return { traces, lineRange: [minV, maxV] as [number, number] };
+    return { traces, lineRange: [minV, maxV] as [number, number], shown: top.length };
   }, [accounts]);
 
   const diagonal = {
@@ -72,7 +84,9 @@ export default function CostRevenueScatter({ accounts }: { accounts: Account[] }
 
   return (
     <div className="chart-card wide">
-      <div className="chart-title">Total Expense vs Total Business</div>
+      <div className="chart-title">
+        Total Expense vs Total Business <span className="row-count">(Top {shown} by Total Expense)</span>
+      </div>
       <Plot
         data={[diagonal, ...traces]}
         layout={{

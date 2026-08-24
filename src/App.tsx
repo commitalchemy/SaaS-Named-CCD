@@ -5,9 +5,13 @@ import VerticalChart from './components/charts/VerticalChart';
 import CostRevenueScatter from './components/charts/CostRevenueScatter';
 import AccountsTable from './components/table/AccountsTable';
 import AccountDrawer from './components/drawer/AccountDrawer';
+import DataSourceScreen from './components/datasource/DataSourceScreen';
+import DataSourceBar from './components/datasource/DataSourceBar';
 import { useFilteredAccounts } from './state/useFilteredAccounts';
+import { useDataStore } from './state/dataStore';
 
 export default function App() {
+  const status = useDataStore((s) => s.status);
   const accounts = useFilteredAccounts();
 
   return (
@@ -16,19 +20,26 @@ export default function App() {
         <h1>Cost Correction Intelligence</h1>
       </header>
 
-      <FilterBar />
-      <KpiCards accounts={accounts} />
+      {status === 'empty' ? (
+        <DataSourceScreen />
+      ) : (
+        <>
+          <DataSourceBar />
+          <FilterBar />
+          <KpiCards accounts={accounts} />
 
-      <div className="chart-grid">
-        <OutcomeChart accounts={accounts} />
-        <VerticalChart accounts={accounts} />
-      </div>
+          <div className="chart-grid">
+            <OutcomeChart accounts={accounts} />
+            <VerticalChart accounts={accounts} />
+          </div>
 
-      <CostRevenueScatter accounts={accounts} />
+          <CostRevenueScatter accounts={accounts} />
 
-      <AccountsTable accounts={accounts} />
+          <AccountsTable accounts={accounts} />
 
-      <AccountDrawer />
+          <AccountDrawer />
+        </>
+      )}
     </main>
   );
 }
