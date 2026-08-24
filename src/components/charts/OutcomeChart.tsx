@@ -6,7 +6,9 @@ import { OUTCOME_COLORS, NAVY_SOFT } from '../../lib/theme';
 export default function OutcomeChart({ accounts }: { accounts: Account[] }) {
   const { labels, values, colors } = useMemo(() => {
     const counts = new Map<string, number>();
-    accounts.forEach((a) => counts.set(a.businessOutcome, (counts.get(a.businessOutcome) ?? 0) + 1));
+    accounts
+      .filter((a) => a.vertical !== 'Accounts' && a.businessStatus !== 'Internal Accounts')
+      .forEach((a) => counts.set(a.businessOutcome, (counts.get(a.businessOutcome) ?? 0) + 1));
     const entries = [...counts.entries()].sort((a, b) => b[1] - a[1]);
     return {
       labels: entries.map((e) => e[0]),

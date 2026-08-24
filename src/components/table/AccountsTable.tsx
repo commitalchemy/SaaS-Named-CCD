@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
 import type { Account } from '../../types';
 import { OUTCOME_COLORS } from '../../lib/theme';
+import { formatINRCompact } from '../../lib/format';
 import { useFilterStore } from '../../state/filterStore';
 import { useUiStore } from '../../state/uiStore';
 import { useDataStore } from '../../state/dataStore';
 
 type SortKey = 'name' | 'vertical' | 'businessStatus' | 'businessOutcome' | 'totalExpense' | 'totalBusiness';
 
-const fmtMoney = (n: number | null) =>
-  n == null ? '—' : '₹' + new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(n);
+const fmtMoney = formatINRCompact;
 
 const COLUMNS: { key: SortKey; label: string; width: string }[] = [
   { key: 'name', label: 'SaaS Name', width: '24%' },
@@ -20,7 +20,8 @@ const COLUMNS: { key: SortKey; label: string; width: string }[] = [
 ];
 
 export default function AccountsTable({ accounts }: { accounts: Account[] }) {
-  const [sortKey, setSortKey] = useState<SortKey>('name');
+  // Account Detail defaults to Total Business ascending.
+  const [sortKey, setSortKey] = useState<SortKey>('totalBusiness');
   const [asc, setAsc] = useState(true);
   const selectAccount = useUiStore((s) => s.selectAccount);
   const allAccounts = useDataStore((s) => s.accounts);

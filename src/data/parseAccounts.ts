@@ -18,7 +18,7 @@ export function normalizeVertical(v: string): string {
   return v.trim();
 }
 
-/** Same "blank -> Unspecified" treatment, for Business Status / Business Outcome text. */
+/** Same "blank -> Unspecified" treatment, for Business Status / Business Outcome / CS text. */
 function cleanLabel(v: unknown): string {
   const s = v == null ? '' : String(v).trim();
   if (s === '' || s.toLowerCase() === '#n/a' || s.toLowerCase() === 'n/a') return 'Unspecified';
@@ -50,6 +50,15 @@ const HEADER_ALIASES = {
   businessOutcome: ['business outcome', 'outcome'],
   totalExpense: ['total expense', 'expense'],
   totalBusiness: ['total business', 'business'],
+  utilityCount: ['utility count'],
+  platformCost: ['total platform cost', 'platform cost'],
+  operationsCost: ['total operations cost', 'operations cost'],
+  csCost: ['total cs cost', 'cs cost'],
+  coreCollectionFY26: ["core collection fy'26", 'core collection fy26', 'core collection'],
+  nonCoreMargins: ['non-core margins', 'non core margins'],
+  businessMinusExpense: ['business - expense', 'business – expense', 'business-expense'],
+  csSpoc: ['cs spoc'],
+  csManager: ['cs manager'],
 } as const;
 
 function findColumnIndex(headers: string[], aliases: readonly string[]): number {
@@ -74,10 +83,9 @@ export class SheetParseError extends Error {}
 /**
  * Reads a parsed SheetJS workbook (from an uploaded CSV/XLSX file, or a
  * fetched Google Sheet CSV export) and maps it to Account[] using the same
- * columns as the "SaaS Name Mapping" tab: Saas Name, Vertical, Business
- * Status, Business Outcome, Total Expense, Total Business. Every account
- * row is kept — existing, new, churned, and blanks alike; nothing is
- * filtered out here.
+ * columns as the "SaaS Name Mapping" tab. Rows with a blank Saas Name are
+ * dropped entirely — they never enter calculations or display anywhere in
+ * the app, since this is the single point all account data flows through.
  */
 export function parseWorkbookToAccounts(wb: XLSX.WorkBook): Account[] {
   if (!wb.SheetNames.length) throw new SheetParseError('That file has no sheets.');
@@ -94,6 +102,15 @@ export function parseWorkbookToAccounts(wb: XLSX.WorkBook): Account[] {
     businessOutcome: findColumnIndex(headerRow, HEADER_ALIASES.businessOutcome),
     totalExpense: findColumnIndex(headerRow, HEADER_ALIASES.totalExpense),
     totalBusiness: findColumnIndex(headerRow, HEADER_ALIASES.totalBusiness),
+    utilityCount: findColumnIndex(headerRow, HEADER_ALIASES.utilityCount),
+    platformCost: findColumnIndex(headerRow, HEADER_ALIASES.platformCost),
+    operationsCost: findColumnIndex(headerRow, HEADER_ALIASES.operationsCost),
+    csCost: findColumnIndex(headerRow, HEADER_ALIASES.csCost),
+    coreCollectionFY26: findColumnIndex(headerRow, HEADER_ALIASES.coreCollectionFY26),
+    nonCoreMargins: findColumnIndex(headerRow, HEADER_ALIASES.nonCoreMargins),
+    businessMinusExpense: findColumnIndex(headerRow, HEADER_ALIASES.businessMinusExpense),
+    csSpoc: findColumnIndex(headerRow, HEADER_ALIASES.csSpoc),
+    csManager: findColumnIndex(headerRow, HEADER_ALIASES.csManager),
   };
 
   if (idx.name === -1) {
@@ -102,32 +119,34 @@ export function parseWorkbookToAccounts(wb: XLSX.WorkBook): Account[] {
     );
   }
 
+  const get = (row: unknown[], i: number) => (i !== -1 ? row[i] : null);
+
   const accounts: Account[] = [];
   for (let r = 1; r < rows.length; r++) {
     const row = rows[r];
     if (!row) continue;
 
-    const rawName = row[idx.name];
-    const rawVertical = idx.vertical !== -1 ? row[idx.vertical] : null;
-    const rawStatus = idx.businessStatus !== -1 ? row[idx.businessStatus] : null;
-    const rawOutcome = idx.businessOutcome !== -1 ? row[idx.businessOutcome] : null;
-    const rawExpense = idx.totalExpense !== -1 ? row[idx.totalExpense] : null;
-    const rawBusiness = idx.totalBusiness !== -1 ? row[idx.totalBusiness] : null;
-
-    const isRowEmpty = [rawName, rawVertical, rawStatus, rawOutcome, rawExpense, rawBusiness].every(
-      (v) => v == null || String(v).trim() === ''
-    );
-    if (isRowEmpty) continue;
-
+    const rawName = get(row, idx.name);
     const name = rawName == null ? '' : String(rawName).trim();
+    // Blank SaaS Name -> exclude the row entirely (not just hide it downstream).
+    if (name === '') continue;
 
     accounts.push({
-      name: name === '' ? '(Unnamed account)' : name,
-      vertical: normalizeVertical(rawVertical == null ? '' : String(rawVertical)),
-      businessStatus: cleanLabel(rawStatus),
-      businessOutcome: cleanLabel(rawOutcome),
-      totalExpense: toNumber(rawExpense),
-      totalBusiness: toNumber(rawBusiness),
+      name,
+      vertical: normalizeVertical(get(row, idx.vertical) == null ? '' : String(get(row, idx.vertical))),
+      businessStatus: cleanLabel(get(row, idx.businessStatus)),
+      businessOutcome: cleanLabel(get(row, idx.businessOutcome)),
+      totalExpense: toNumber(get(row, idx.totalExpense)),
+      totalBusiness: toNumber(get(row, idx.totalBusiness)),
+      utilityCount: toNumber(get(row, idx.utilityCount)),
+      platformCost: toNumber(get(row, idx.platformCost)),
+      operationsCost: toNumber(get(row, idx.operationsCost)),
+      csCost: toNumber(get(row, idx.csCost)),
+      coreCollectionFY26: toNumber(get(row, idx.coreCollectionFY26)),
+      nonCoreMargins: toNumber(get(row, idx.nonCoreMargins)),
+      businessMinusExpense: toNumber(get(row, idx.businessMinusExpense)),
+      csSpoc: cleanLabel(get(row, idx.csSpoc)),
+      csManager: cleanLabel(get(row, idx.csManager)),
     });
   }
 

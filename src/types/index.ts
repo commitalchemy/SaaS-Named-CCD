@@ -13,6 +13,24 @@ export interface Account {
   totalExpense: number | null;
   /** Verbatim "Total Business" column value. */
   totalBusiness: number | null;
+  /** Verbatim "Utility Count" column value. */
+  utilityCount: number | null;
+  /** Verbatim "Total Platform Cost" column value. */
+  platformCost: number | null;
+  /** Verbatim "Total Operations Cost" column value. */
+  operationsCost: number | null;
+  /** Verbatim "Total CS Cost" column value. */
+  csCost: number | null;
+  /** Verbatim "Core Collection FY'26" column value. */
+  coreCollectionFY26: number | null;
+  /** Verbatim "Non-Core Margins" column value. */
+  nonCoreMargins: number | null;
+  /** Verbatim "Business - Expense" column value. */
+  businessMinusExpense: number | null;
+  /** Verbatim "CS SPOC" column value. */
+  csSpoc: string;
+  /** Verbatim "CS Manager" column value. */
+  csManager: string;
 }
 
 export interface FilterState {

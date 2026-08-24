@@ -7,7 +7,9 @@ export default function VerticalChart({ accounts }: { accounts: Account[] }) {
   const { labels, values, colors } = useMemo(() => {
     const counts = new Map<string, number>();
     accounts
-      .filter((a) => a.vertical !== 'Unspecified')
+      .filter(
+        (a) => a.vertical !== 'Unspecified' && a.vertical !== 'Accounts' && a.businessStatus !== 'Internal Accounts'
+      )
       .forEach((a) => counts.set(a.vertical, (counts.get(a.vertical) ?? 0) + 1));
     const entries = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
     return {

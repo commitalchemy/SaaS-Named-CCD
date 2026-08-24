@@ -1,14 +1,30 @@
 import { useUiStore } from '../../state/uiStore';
 import { OUTCOME_COLORS } from '../../lib/theme';
+import { formatINRCompact } from '../../lib/format';
 
-const fmtMoney = (n: number | null) =>
-  n == null ? '—' : '₹' + new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(n);
+const fmtInt = (n: number | null) => (n == null ? '—' : new Intl.NumberFormat('en-IN').format(n));
 
 export default function AccountDrawer() {
   const account = useUiStore((s) => s.selectedAccount);
   const selectAccount = useUiStore((s) => s.selectAccount);
 
   const open = account !== null;
+
+  const fields = account
+    ? [
+        { label: 'Utility Count', value: fmtInt(account.utilityCount) },
+        { label: 'Platform Cost', value: formatINRCompact(account.platformCost) },
+        { label: 'Operations Cost', value: formatINRCompact(account.operationsCost) },
+        { label: 'CS Cost', value: formatINRCompact(account.csCost) },
+        { label: 'Expense', value: formatINRCompact(account.totalExpense) },
+        { label: 'Business', value: formatINRCompact(account.totalBusiness) },
+        { label: "Core Collection FY'26", value: formatINRCompact(account.coreCollectionFY26) },
+        { label: 'Non-Core Margins', value: formatINRCompact(account.nonCoreMargins) },
+        { label: 'Business − Expense', value: formatINRCompact(account.businessMinusExpense) },
+        { label: 'CS SPOC', value: account.csSpoc },
+        { label: 'CS Manager', value: account.csManager },
+      ]
+    : [];
 
   return (
     <>
@@ -42,14 +58,12 @@ export default function AccountDrawer() {
                 <label>Business Status</label>
                 <span>{account.businessStatus}</span>
               </div>
-              <div className="drawer-field">
-                <label>Total Expense</label>
-                <span>{fmtMoney(account.totalExpense)}</span>
-              </div>
-              <div className="drawer-field">
-                <label>Total Business</label>
-                <span>{fmtMoney(account.totalBusiness)}</span>
-              </div>
+              {fields.map((f) => (
+                <div className="drawer-field" key={f.label}>
+                  <label>{f.label}</label>
+                  <span>{f.value}</span>
+                </div>
+              ))}
             </div>
           </>
         ) : null}
