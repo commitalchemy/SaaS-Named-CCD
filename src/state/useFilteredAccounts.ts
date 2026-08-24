@@ -16,7 +16,9 @@ export function useFilteredAccounts() {
     const q = search.trim().toLowerCase();
     return accounts.filter((a) => {
       if (vertical !== 'All' && a.vertical !== vertical) return false;
-      if (businessStatus !== 'All' && a.businessStatus !== businessStatus) return false;
+      if (businessStatus === 'Active') {
+        if (!['Existing', 'New', 'Internal Accounts'].includes(a.businessStatus)) return false;
+      } else if (businessStatus !== 'All' && a.businessStatus !== businessStatus) return false;
       if (businessOutcome !== 'All' && a.businessOutcome !== businessOutcome) return false;
       if (csSpoc !== 'All' && a.csSpoc !== csSpoc) return false;
       if (csManager !== 'All' && a.csManager !== csManager) return false;
