@@ -52,7 +52,9 @@ export default function NetContributionHeatmap({ accounts }: { accounts: Account
   const [mode, setMode] = useState<'top' | 'bottom'>('top');
 
   const { z, text, customdata, yLabels, height } = useMemo(() => {
-    const valid = accounts.filter((a) => a.totalExpense != null && a.totalBusiness != null);
+    const valid = accounts.filter(
+      (a) => a.totalExpense != null && a.totalBusiness != null && !(a.totalExpense === 0 && a.totalBusiness === 0)
+    );
     const withNet = valid.map((a) => ({
       account: a,
       net: (a.totalBusiness as number) - (a.totalExpense as number),
