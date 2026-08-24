@@ -57,7 +57,8 @@ export default function NetContributionHeatmap({ accounts }: { accounts: Account
         a.totalExpense != null &&
         a.totalBusiness != null &&
         a.businessOutcome !== 'Data Not Available' &&
-        a.businessOutcome !== 'Churned Account'
+        a.businessOutcome !== 'Churned Account' &&
+        (mode !== 'bottom' || a.businessOutcome === 'Loss Making Business Arrangement')
     );
     const withNet = valid.map((a) => ({
       account: a,
