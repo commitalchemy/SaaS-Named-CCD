@@ -18,7 +18,7 @@ export default function KpiCards({ accounts }: { accounts: Account[] }) {
   const stats = useMemo(() => {
     const total = accounts.length;
     const active = accounts.filter((a) =>
-      ['Existing', 'New', 'Internal Accounts'].includes(a.businessStatus)
+      ['Existing', 'New', 'Internal Account'].includes(a.businessStatus)
     ).length;
     const healthy = accounts.filter((a) => a.businessOutcome === 'High Revenue Low Cost Account').length;
     const avgCostAvgRevenue = accounts.filter(
@@ -84,7 +84,7 @@ export default function KpiCards({ accounts }: { accounts: Account[] }) {
       onClick: () => toggleOutcome('Average Revenue Average Cost Account'),
     },
     {
-      label: 'Inefficient Accounts',
+      label: 'Underperforming Accounts',
       sub: 'High Cost, Low Revenue',
       value: fmtInt.format(stats.highCostLowRevenue),
       color: OUTCOME_COLORS['Low Revenue High Cost Account'],
