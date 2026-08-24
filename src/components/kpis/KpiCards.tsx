@@ -122,24 +122,30 @@ export default function KpiCards({ accounts }: { accounts: Account[] }) {
     },
   ];
 
-  return (
-    <div className="kpi-row">
-      {cards.map((c) => (
-        <div
-          className={`kpi-card${c.onClick ? ' kpi-card-clickable' : ''}${c.active ? ' kpi-card-active' : ''}`}
-          key={c.label}
-          style={{ borderTopColor: c.color }}
-          onClick={c.onClick}
-          role={c.onClick ? 'button' : undefined}
-          tabIndex={c.onClick ? 0 : undefined}
-        >
-          <div className={c.money ? 'kpi-value kpi-value-money' : 'kpi-value'} style={{ color: c.color }}>
-            {c.value}
-          </div>
-          <div className="kpi-label">{c.label}</div>
-          {c.sub ? <div className="kpi-sub">{c.sub}</div> : null}
-        </div>
-      ))}
+  const topRow = cards.slice(0, 5);
+  const bottomRow = cards.slice(5, 9);
+
+  const renderCard = (c: (typeof cards)[number]) => (
+    <div
+      className={`kpi-card${c.onClick ? ' kpi-card-clickable' : ''}${c.active ? ' kpi-card-active' : ''}`}
+      key={c.label}
+      style={{ borderTopColor: c.color }}
+      onClick={c.onClick}
+      role={c.onClick ? 'button' : undefined}
+      tabIndex={c.onClick ? 0 : undefined}
+    >
+      <div className={c.money ? 'kpi-value kpi-value-money' : 'kpi-value'} style={{ color: c.color }}>
+        {c.value}
+      </div>
+      <div className="kpi-label">{c.label}</div>
+      {c.sub ? <div className="kpi-sub">{c.sub}</div> : null}
     </div>
+  );
+
+  return (
+    <>
+      <div className="kpi-row kpi-row-5">{topRow.map(renderCard)}</div>
+      <div className="kpi-row kpi-row-4">{bottomRow.map(renderCard)}</div>
+    </>
   );
 }
