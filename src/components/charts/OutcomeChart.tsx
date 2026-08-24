@@ -7,7 +7,12 @@ export default function OutcomeChart({ accounts }: { accounts: Account[] }) {
   const { labels, values, colors } = useMemo(() => {
     const counts = new Map<string, number>();
     accounts
-      .filter((a) => a.vertical !== 'Accounts' && a.businessStatus !== 'Internal Accounts')
+      .filter(
+        (a) =>
+          a.vertical !== 'Accounts' &&
+          a.businessStatus !== 'Internal Account' &&
+          a.businessStatus !== 'Internal Accounts'
+      )
       .forEach((a) => counts.set(a.businessOutcome, (counts.get(a.businessOutcome) ?? 0) + 1));
     const entries = [...counts.entries()].sort((a, b) => b[1] - a[1]);
     return {
