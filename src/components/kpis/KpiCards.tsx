@@ -12,6 +12,8 @@ const CONTRIBUTION_RED = '#7A2331';
 export default function KpiCards({ accounts }: { accounts: Account[] }) {
   const businessOutcome = useFilterStore((s) => s.businessOutcome);
   const setBusinessOutcome = useFilterStore((s) => s.setBusinessOutcome);
+  const businessStatus = useFilterStore((s) => s.businessStatus);
+  const setBusinessStatus = useFilterStore((s) => s.setBusinessStatus);
 
   const stats = useMemo(() => {
     const total = accounts.length;
@@ -62,6 +64,8 @@ export default function KpiCards({ accounts }: { accounts: Account[] }) {
       sub: 'Existing + New + Internal',
       value: fmtInt.format(stats.active),
       color: NAVY,
+      active: businessStatus === 'Active',
+      onClick: () => setBusinessStatus(businessStatus === 'Active' ? 'All' : 'Active'),
     },
     {
       label: 'Healthy Accounts',
@@ -72,21 +76,24 @@ export default function KpiCards({ accounts }: { accounts: Account[] }) {
       onClick: () => toggleOutcome('High Revenue Low Cost Account'),
     },
     {
-      label: 'Average Cost, Average Revenue',
+      label: 'Moderate Accounts',
+      sub: 'Average Cost, Average Revenue',
       value: fmtInt.format(stats.avgCostAvgRevenue),
       color: OUTCOME_COLORS['Average Revenue Average Cost Account'],
       active: businessOutcome === 'Average Revenue Average Cost Account',
       onClick: () => toggleOutcome('Average Revenue Average Cost Account'),
     },
     {
-      label: 'High Cost, Low Revenue',
+      label: 'Inefficient Accounts',
+      sub: 'High Cost, Low Revenue',
       value: fmtInt.format(stats.highCostLowRevenue),
       color: OUTCOME_COLORS['Low Revenue High Cost Account'],
       active: businessOutcome === 'Low Revenue High Cost Account',
       onClick: () => toggleOutcome('Low Revenue High Cost Account'),
     },
     {
-      label: 'Loss Making Accounts',
+      label: 'At Risk',
+      sub: 'Loss Making Accounts',
       value: fmtInt.format(stats.lossMaking),
       color: OUTCOME_COLORS['Loss Making Business Arrangement'],
       active: businessOutcome === 'Loss Making Business Arrangement',
