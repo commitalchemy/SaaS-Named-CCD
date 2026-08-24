@@ -53,7 +53,11 @@ export default function NetContributionHeatmap({ accounts }: { accounts: Account
 
   const { z, text, customdata, yLabels, height } = useMemo(() => {
     const valid = accounts.filter(
-      (a) => a.totalExpense != null && a.totalBusiness != null && !(a.totalExpense === 0 && a.totalBusiness === 0)
+      (a) =>
+        a.totalExpense != null &&
+        a.totalBusiness != null &&
+        a.businessOutcome !== 'Data Not Available' &&
+        a.businessOutcome !== 'Churned Account'
     );
     const withNet = valid.map((a) => ({
       account: a,
