@@ -2,7 +2,7 @@ import { useUiStore } from '../../state/uiStore';
 import { OUTCOME_COLORS } from '../../lib/theme';
 import { formatINRCompact } from '../../lib/format';
 
-const fmtInt = (n: number | null) => (n == null ? '—' : new Intl.NumberFormat('en-IN').format(n));
+const fmtInt = (n: number | null) => (n == null ? '—' : new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(n));
 
 export default function AccountDrawer() {
   const account = useUiStore((s) => s.selectedAccount);
