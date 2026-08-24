@@ -58,11 +58,11 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 14px;
+  gap: 8px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 8px 14px;
+  padding: 7px 10px;
   margin-bottom: 10px;
   flex-wrap: wrap;
   text-align: center;
@@ -71,31 +71,34 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 150px;
+  min-width: 112px;
+  flex: 1 1 112px;
+  max-width: 160px;
 }
 .slicer label {
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
   color: var(--text-muted);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
   text-align: center;
+  white-space: nowrap;
 }
 .slicer select,
 .slicer input {
   width: 100%;
-  padding: 5px 8px;
+  padding: 4px 6px;
   border: 1px solid var(--border);
   border-radius: 4px;
   background: #fff;
   color: var(--text);
-  font-size: 12.5px;
+  font-size: 11.5px;
   text-align: center;
   text-align-last: center;
 }
 .search-slicer {
-  min-width: 170px;
+  min-width: 140px;
 }
 .clear-btn {
   border: 1px solid var(--navy-soft);
@@ -117,8 +120,8 @@ body {
 /* ---------- KPI row ---------- */
 .kpi-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
   margin-bottom: 10px;
 }
 .kpi-card {
@@ -126,21 +129,21 @@ body {
   border: 1px solid var(--border);
   border-top: 4px solid var(--navy);
   border-radius: 6px;
-  padding: 12px 8px;
+  padding: 9px 8px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 92px;
+  min-height: 78px;
 }
 .kpi-value {
-  font-size: 30px;
+  font-size: 25px;
   font-weight: 700;
   line-height: 1.1;
 }
 .kpi-value-money {
-  font-size: 19px;
+  font-size: 17px;
   white-space: nowrap;
 }
 .kpi-label {

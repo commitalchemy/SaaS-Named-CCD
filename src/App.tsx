@@ -2,7 +2,7 @@ import FilterBar from './components/filters/FilterBar';
 import KpiCards from './components/kpis/KpiCards';
 import OutcomeChart from './components/charts/OutcomeChart';
 import VerticalChart from './components/charts/VerticalChart';
-import CostRevenueScatter from './components/charts/CostRevenueScatter';
+import NetContributionHeatmap from './components/charts/NetContributionHeatmap';
 import AccountsTable from './components/table/AccountsTable';
 import AccountDrawer from './components/drawer/AccountDrawer';
 import DataSourceScreen from './components/datasource/DataSourceScreen';
@@ -33,7 +33,7 @@ export default function App() {
             <VerticalChart accounts={accounts} />
           </div>
 
-          <CostRevenueScatter accounts={accounts} />
+          <NetContributionHeatmap accounts={accounts} />
 
           <AccountsTable accounts={accounts} />
 

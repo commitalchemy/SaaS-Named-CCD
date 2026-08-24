@@ -59,6 +59,7 @@ const HEADER_ALIASES = {
   businessMinusExpense: ['business - expense', 'business – expense', 'business-expense'],
   csSpoc: ['cs spoc'],
   csManager: ['cs manager'],
+  csHead: ['cs head'],
 } as const;
 
 function findColumnIndex(headers: string[], aliases: readonly string[]): number {
@@ -111,6 +112,7 @@ export function parseWorkbookToAccounts(wb: XLSX.WorkBook): Account[] {
     businessMinusExpense: findColumnIndex(headerRow, HEADER_ALIASES.businessMinusExpense),
     csSpoc: findColumnIndex(headerRow, HEADER_ALIASES.csSpoc),
     csManager: findColumnIndex(headerRow, HEADER_ALIASES.csManager),
+    csHead: findColumnIndex(headerRow, HEADER_ALIASES.csHead),
   };
 
   if (idx.name === -1) {
@@ -147,6 +149,7 @@ export function parseWorkbookToAccounts(wb: XLSX.WorkBook): Account[] {
       businessMinusExpense: toNumber(get(row, idx.businessMinusExpense)),
       csSpoc: cleanLabel(get(row, idx.csSpoc)),
       csManager: cleanLabel(get(row, idx.csManager)),
+      csHead: cleanLabel(get(row, idx.csHead)),
     });
   }
 

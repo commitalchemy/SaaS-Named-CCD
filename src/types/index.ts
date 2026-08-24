@@ -31,11 +31,16 @@ export interface Account {
   csSpoc: string;
   /** Verbatim "CS Manager" column value. */
   csManager: string;
+  /** Verbatim "CS Head" column value. */
+  csHead: string;
 }
 
 export interface FilterState {
   vertical: string;
   businessStatus: string;
   businessOutcome: string;
+  csSpoc: string;
+  csManager: string;
+  csHead: string;
   search: string;
 }
